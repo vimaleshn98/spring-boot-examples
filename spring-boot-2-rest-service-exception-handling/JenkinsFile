@@ -147,13 +147,29 @@ pipeline {
                     def userInput = input message: 'Do you want to proceed?', parameters: [
                         booleanParam(defaultValue: false, description: 'Deploy to environment?', name: 'Deploy')
                     ]
-                    // Deploy Docker container to a staging environment
-                    sh '''#!/bin/bash
-                    docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
 
-                    '''
+                    // Log in to Docker Hub and pull the image using the stored credentials
+                    withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh '''#!/bin/bash
+                        docker --version
+                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                    docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+                        '''
+                    }
                 }
             }
+        }
+        stage('clean up stuffs') {
+            agent any
+            steps {
+                    script {
+                        // Clean up Docker images to save space
+                        sh '''#!/bin/bash
+                        echo ${GIT_COMMIT}
+                        docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+                        '''
+                    }
+                }
         }
 
     
@@ -167,15 +183,7 @@ pipeline {
             echo 'Build or deployment failed!'
         }
         always {
-            steps {
-                script {
-                    // Clean up Docker images to save space
-                    sh '''#!/bin/bash
-                    echo ${GIT_COMMIT}
-                    docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-                    '''
-                }
-            }
+            echo 'Be Happy!!'
         }
     }
 }
