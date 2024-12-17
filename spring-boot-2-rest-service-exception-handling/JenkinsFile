@@ -114,6 +114,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
+                agent any
                 script {
                     // Build Docker image for the Spring Boot app
                     sh '''#!/bin/bash
