@@ -9,11 +9,11 @@ pipeline {
     
     environment {
         // Define environment variables
-        SPRING_BOOT_APP_NAME = 'my-spring-boot-app'      // Spring Boot app name
+        SPRING_BOOT_APP_NAME = 'spring-boot-2-rest-service-exception-handling'      // Spring Boot app name
         SPRING_BOOT_PORT = 8080                          // Spring Boot application port
-        DOCKER_IMAGE_NAME = 'my-spring-boot-app-image'   // Docker image name
+        DOCKER_IMAGE_NAME = 'spring-boot-2-rest-service-exception-handling'   // Docker image name
         DOCKER_REGISTRY = 'vimalesh198'            // Docker registry username
-        DOCKER_REPO = 'my-spring-boot-app-repo'          // Docker repository name
+        DOCKER_REPO = 'spring-boot-2-rest-service-exception-handling'          // Docker repository name
         // MAVEN_HOME = tool name: 'M3', type: 'Tool'       // Use Maven tool configured in Jenkins
     }
 
