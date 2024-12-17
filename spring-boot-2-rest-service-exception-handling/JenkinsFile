@@ -120,6 +120,7 @@ pipeline {
         }
 
         stage('Push Docker Image') {
+            agent any
             steps {
                 script {
                      def userInput = input message: 'Do you want to proceed?', parameters: [
@@ -140,6 +141,7 @@ pipeline {
         }
 
         stage('Deploy to Staging') {
+            agent any
             steps {
                 script {
                     def userInput = input message: 'Do you want to proceed?', parameters: [
