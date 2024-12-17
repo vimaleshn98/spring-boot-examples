@@ -131,6 +131,7 @@ pipeline {
                         sh '''#!/bin/bash
                         docker --version
                         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                        sleep 2m
                         docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
                         '''
                     }
@@ -153,7 +154,8 @@ pipeline {
                         sh '''#!/bin/bash
                         docker --version
                         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-                    docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+                        sleep 2m
+                        docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
                         '''
                     }
                 }
