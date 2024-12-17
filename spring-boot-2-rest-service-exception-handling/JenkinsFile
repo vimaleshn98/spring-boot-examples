@@ -13,7 +13,7 @@ pipeline {
         DOCKER_IMAGE_NAME = 'my-spring-boot-app-image'   // Docker image name
         DOCKER_REGISTRY = 'dockerhubusername'            // Docker registry username
         DOCKER_REPO = 'my-spring-boot-app-repo'          // Docker repository name
-        MAVEN_HOME = tool name: 'M3', type: 'Tool'       // Use Maven tool configured in Jenkins
+        // MAVEN_HOME = tool name: 'M3', type: 'Tool'       // Use Maven tool configured in Jenkins
     }
 
     stages {
