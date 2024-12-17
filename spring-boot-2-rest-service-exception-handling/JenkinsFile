@@ -122,10 +122,15 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
+                     def userInput = input message: 'Do you want to proceed?', parameters: [
+                        booleanParam(defaultValue: false, description: 'Approve deployment?', name: 'Deploy')
+                    ]
                     // Log in to Docker Hub and push the image using the stored credentials
                     withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                        sh "docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}"
+                        sh '''#!/bin/bash
+                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                        docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+                        '''
                     }
                 }
             }
@@ -166,7 +171,9 @@ pipeline {
         }
         always {
             // Clean up Docker images to save space
-            sh "docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}"
+            sh '''#!/bin/bash
+            docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+            '''
         }
     }
 }
