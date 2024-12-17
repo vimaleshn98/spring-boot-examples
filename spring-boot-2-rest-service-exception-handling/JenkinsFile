@@ -31,7 +31,7 @@ pipeline {
         stage('validation'){
             steps{
                 dir('spring-boot-2-rest-service-exception-handling') {
-                    sh(script: 'mvn validate')
+                    sh(script: 'mvn -Dmaven.repo.local=/tmp/.m2/repository clean validate')
                 }
             }
             post{
