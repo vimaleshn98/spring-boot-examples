@@ -50,7 +50,7 @@ pipeline {
         stage('Test'){
             steps{
                 dir('spring-boot-2-rest-service-exception-handling') {
-                    sh 'mvn test'
+                    sh 'mvn -Dmaven.repo.local=/tmp/.m2/repository test'
                 }
             }
             post{
@@ -68,7 +68,7 @@ pipeline {
         stage('Build'){
             steps{
                 dir('spring-boot-2-rest-service-exception-handling') {
-                    sh 'mvn -B -DskipTests clean package'
+                    sh 'mvn -B -DskipTests -Dmaven.repo.local=/tmp/.m2/repository clean package'
                 }
             }
             post{
