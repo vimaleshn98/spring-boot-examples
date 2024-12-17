@@ -28,26 +28,30 @@ pipeline {
             }
         }
         
-        // stage('validation'){
-        //     steps{
-        //         sh(script: 'mvn validate')
-        //     }
-        //     post{
-        //         always{
-        //             echo(message: 'maven validations stage ')
-        //         }
-        //         success{
-        //             echo(message: 'maven validations successfull')
-        //         }
-        //         unsuccessful{
-        //             echo(message: 'maven validations unsuccessfull')
-        //         }
-        //     }
-        // }
+        stage('validation'){
+            steps{
+                dir('spring-boot-2-rest-service-exception-handling') {
+                    sh(script: 'mvn validate')
+                }
+            }
+            post{
+                always{
+                    echo(message: 'maven validations stage ')
+                }
+                success{
+                    echo(message: 'maven validations successfull')
+                }
+                unsuccessful{
+                    echo(message: 'maven validations unsuccessfull')
+                }
+            }
+        }
 
         stage('Test'){
             steps{
-                sh 'mvn test'
+                dir('spring-boot-2-rest-service-exception-handling') {
+                    sh 'mvn test'
+                }
             }
             post{
                 always{
@@ -63,7 +67,9 @@ pipeline {
         }
         stage('Build'){
             steps{
-                sh 'mvn -B -DskipTests clean package'
+                dir('spring-boot-2-rest-service-exception-handling') {
+                    sh 'mvn -B -DskipTests clean package'
+                }
             }
             post{
                 always{
