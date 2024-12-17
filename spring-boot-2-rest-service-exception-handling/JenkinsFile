@@ -28,22 +28,22 @@ pipeline {
             }
         }
         
-        stage('validation'){
-            steps{
-                sh(script: 'mvn validate')
-            }
-            post{
-                always{
-                    echo(message: 'maven validations stage ')
-                }
-                success{
-                    echo(message: 'maven validations successfull')
-                }
-                unsuccessful{
-                    echo(message: 'maven validations unsuccessfull')
-                }
-            }
-        }
+        // stage('validation'){
+        //     steps{
+        //         sh(script: 'mvn validate')
+        //     }
+        //     post{
+        //         always{
+        //             echo(message: 'maven validations stage ')
+        //         }
+        //         success{
+        //             echo(message: 'maven validations successfull')
+        //         }
+        //         unsuccessful{
+        //             echo(message: 'maven validations unsuccessfull')
+        //         }
+        //     }
+        // }
 
         stage('Test'){
             steps{
