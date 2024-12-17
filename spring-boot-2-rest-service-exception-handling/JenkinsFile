@@ -38,7 +38,7 @@ pipeline {
             }
             steps{
                 dir('spring-boot-2-rest-service-exception-handling') {
-                    sh(script: 'mvn -Dmaven.repo.local=/tmp/.m2/repository clean validate')
+                    sh(script: 'mvn clean validate')
                 }
             }
             post{
@@ -63,7 +63,7 @@ pipeline {
             }
             steps{
                 dir('spring-boot-2-rest-service-exception-handling') {
-                    sh 'mvn -Dmaven.repo.local=/tmp/.m2/repository test'
+                    sh 'mvn test'
                 }
             }
             post{
@@ -123,43 +123,38 @@ pipeline {
             steps {
                 script {
                      def userInput = input message: 'Do you want to proceed?', parameters: [
-                        booleanParam(defaultValue: false, description: 'Approve deployment?', name: 'Deploy')
+                        booleanParam(defaultValue: false, description: 'Push to Docker Hub?', name: 'Push')
                     ]
                     // Log in to Docker Hub and push the image using the stored credentials
                     withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh '''#!/bin/bash
+                        docker --version
                         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
                         docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
                         '''
                     }
+            
+                    
                 }
             }
         }
 
-        // stage('Deploy to Staging') {
-        //     steps {
-        //         script {
-        //             // Deploy Docker container to a staging environment
-        //             sh '''#!/bin/bash
-        //             docker-compose -f docker-compose.staging.yml up -d
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Deploy to Staging') {
+            steps {
+                script {
+                    def userInput = input message: 'Do you want to proceed?', parameters: [
+                        booleanParam(defaultValue: false, description: 'Deploy to environment?', name: 'Deploy')
+                    ]
+                    // Deploy Docker container to a staging environment
+                    sh '''#!/bin/bash
+                    docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
 
-        // stage('Deploy to Production') {
-        //     when {
-        //         branch 'main'  // Deploy only on main branch
-        //     }
-        //     steps {
-        //         script {
-        //             // Deploy Docker container to the production environment
-        //             sh '''#!/bin/bash
-        //             docker-compose -f docker-compose.production.yml up -d
-        //             '''
-        //         }
-        //     }
-        // }
+                    '''
+                }
+            }
+        }
+
+    
     }
 
     post {
@@ -172,6 +167,7 @@ pipeline {
         always {
             // Clean up Docker images to save space
             sh '''#!/bin/bash
+            echo ${GIT_COMMIT}
             docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
             '''
         }
