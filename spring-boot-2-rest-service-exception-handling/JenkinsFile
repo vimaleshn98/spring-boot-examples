@@ -1,0 +1,141 @@
+pipeline {
+    agent {
+        docker {
+            image 'maven:3-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
+    
+    environment {
+        // Define environment variables
+        SPRING_BOOT_APP_NAME = 'my-spring-boot-app'      // Spring Boot app name
+        SPRING_BOOT_PORT = 8080                          // Spring Boot application port
+        DOCKER_IMAGE_NAME = 'my-spring-boot-app-image'   // Docker image name
+        DOCKER_REGISTRY = 'dockerhubusername'            // Docker registry username
+        DOCKER_REPO = 'my-spring-boot-app-repo'          // Docker repository name
+        MAVEN_HOME = tool name: 'M3', type: 'Tool'       // Use Maven tool configured in Jenkins
+    }
+
+    stages {
+        stage('maven version'){
+            steps{
+                sh(script: 'mvn --version')
+            }
+            post{
+                always{
+                    echo(message: 'maven version stage ')
+                }
+            }
+        }
+        
+        stage('validation'){
+            steps{
+                sh(script: 'mvn validate')
+            }
+            post{
+                always{
+                    echo(message: 'maven validations stage ')
+                }
+                success{
+                    echo(message: 'maven validations successfull')
+                }
+                unsuccessful{
+                    echo(message: 'maven validations unsuccessfull')
+                }
+            }
+        }
+
+        stage('Test'){
+            steps{
+                sh 'mvn test'
+            }
+            post{
+                always{
+                    echo(message: 'maven Test stage ')
+                }
+                success{
+                    echo(message: 'maven test successfull')
+                }
+                unsuccessful{
+                    echo(message: 'maven test unsuccessfull')
+                }
+            }
+        }
+        stage('Build'){
+            steps{
+                sh 'mvn -B -DskipTests clean package'
+            }
+            post{
+                always{
+                    echo(message: 'maven Build stage ')
+                }
+                success{
+                    echo(message: 'maven Build successfull')
+                    archiveArtifacts artifacts: '**/target/*.jar'
+                }
+                unsuccessful{
+                    echo(message: 'maven Build unsuccessfull')
+                }
+            }
+        }   
+
+        
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build Docker image for the Spring Boot app
+                    sh '''#!/bin/bash
+                    docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT} .
+                    '''
+                }
+            }
+        }
+
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             // Login to Docker registry
+        //             sh '''#!/bin/bash
+        //             docker login -u $DOCKER_REGISTRY -p $DOCKER_PASSWORD
+        //             docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+        //             '''
+        //         }
+        //     }
+        // }
+
+        // stage('Deploy to Staging') {
+        //     steps {
+        //         script {
+        //             // Deploy Docker container to a staging environment
+        //             sh '''#!/bin/bash
+        //             docker-compose -f docker-compose.staging.yml up -d
+        //             '''
+        //         }
+        //     }
+        // }
+
+        // stage('Deploy to Production') {
+        //     when {
+        //         branch 'main'  // Deploy only on main branch
+        //     }
+        //     steps {
+        //         script {
+        //             // Deploy Docker container to the production environment
+        //             sh '''#!/bin/bash
+        //             docker-compose -f docker-compose.production.yml up -d
+        //             '''
+        //         }
+        //     }
+        // }
+    }
+
+    post {
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build or deployment failed!'
+        }
+    }
+}
