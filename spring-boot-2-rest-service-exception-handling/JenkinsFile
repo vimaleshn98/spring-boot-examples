@@ -165,11 +165,16 @@ pipeline {
             echo 'Build or deployment failed!'
         }
         always {
-            // Clean up Docker images to save space
-            sh '''#!/bin/bash
-            echo ${GIT_COMMIT}
-            docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-            '''
+            agent any
+            steps {
+                script {
+                    // Clean up Docker images to save space
+                    sh '''#!/bin/bash
+                    echo ${GIT_COMMIT}
+                    docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+                    '''
+                }
+            }
         }
     }
 }
