@@ -118,6 +118,7 @@ pipeline {
                 script {
                     // Build Docker image for the Spring Boot app
                     sh '''#!/bin/bash
+                    cd spring-boot-2-rest-service-exception-handling
                     docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT} .
                     '''
                 }
