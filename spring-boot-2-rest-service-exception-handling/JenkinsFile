@@ -5,7 +5,7 @@ pipeline {
     //         args '-v $HOME/.m2:/root/.m2'
     //     }
     // }
-    agent any 
+    agent none 
     
     environment {
         // Define environment variables
@@ -113,8 +113,8 @@ pipeline {
         
 
         stage('Build Docker Image') {
-            steps {
-                agent any
+            agent any
+            steps {                
                 script {
                     // Build Docker image for the Spring Boot app
                     sh '''#!/bin/bash
