@@ -87,7 +87,7 @@ pipeline {
             }                               
             steps{
                 dir('spring-boot-2-rest-service-exception-handling') {
-                    sh 'mvn -B -DskipTests -Dmaven.repo.local=/tmp/.m2/repository clean package'
+                    sh 'mvn -B -DskipTests clean package'
                 }
             }
             post{
@@ -166,7 +166,7 @@ pipeline {
                         docker --version
                         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
                         docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-                        docker run -p 8084:8080 ${DOCKER_IMAGE_NAME}
+                        docker run -p 8084:8080 -d ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
                         '''
                     }
                 }
