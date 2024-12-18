@@ -1,6 +1,6 @@
 pipeline {
     agent any  // This will use any available agent for the entire pipeline.
-
+    
     environment {
         // Define environment variables
         SPRING_BOOT_APP_NAME = 'spring-boot-2-rest-service-with-swagger'      // Spring Boot app name
@@ -12,12 +12,12 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Clone the Git repository
-                git 'https://github.com/vimaleshn98/spring-boot-examples.git'
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         // Clone the Git repository
+        //         git 'https://github.com/vimaleshn98/spring-boot-examples.git'
+        //     }
+        // }
         stage('maven version'){
             agent {
                 docker {
