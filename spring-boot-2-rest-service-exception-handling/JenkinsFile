@@ -139,7 +139,7 @@ pipeline {
                 }
             }
             post{
-                success{
+                always{
                      script {
                         // Cleanup: remove the Docker image after successful build
                         echo "Cleaning up Docker image..."
