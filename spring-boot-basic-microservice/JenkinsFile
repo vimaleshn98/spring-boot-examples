@@ -45,9 +45,9 @@ pipeline {
             }
         }
 
-        stage("Parallel validation ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}"){
+        stage("Parallel validation spring-boot-basic-microservice"){
             parallel {
-                stage("validation ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}"){
+                stage("validation spring-boot-microservice-currency-conversion-service"){
                     agent {
                         docker {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
@@ -55,7 +55,7 @@ pipeline {
                         }
                     }
                     steps{
-                        dir('spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}') {
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}") {
                             sh(script: 'mvn clean validate')
                         }
                     }
@@ -71,7 +71,7 @@ pipeline {
                         }
                     }
                 }
-                stage('validation spring-boot-microservice-eureka-naming-server'){
+                stage("validation spring-boot-microservice-eureka-naming-server"){
                     agent {
                         docker {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
@@ -79,7 +79,7 @@ pipeline {
                         }
                     }
                     steps{
-                        dir('spring-boot-basic-microservice/spring-boot-microservice-eureka-naming-server') {
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME}") {
                             sh(script: 'mvn clean validate')
                         }
                     }
@@ -95,7 +95,7 @@ pipeline {
                         }
                     }
                 }
-                stage('validation spring-boot-microservice-forex-service'){
+                stage("validation spring-boot-microservice-forex-service"){
                     agent {
                         docker {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
@@ -103,7 +103,7 @@ pipeline {
                         }
                     }
                     steps{
-                        dir('spring-boot-basic-microservice/spring-boot-microservice-forex-service') {
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_FOREX_SERVICE_NAME}") {
                             sh(script: 'mvn clean validate')
                         }
                     }
@@ -119,14 +119,13 @@ pipeline {
                         }
                     }
                 }
-            
             }
         }
         
 
-        stage('Parallel tests spring-boot-basic-microservice'){
+        stage('Parallel Tests spring-boot-basic-microservice'){
             parallel {
-                stage('tests spring-boot-microservice-currency-conversion-service'){
+                stage("Tests spring-boot-microservice-currency-conversion-service"){
                     agent {
                         docker {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
@@ -134,23 +133,23 @@ pipeline {
                         }
                     }
                     steps{
-                        dir('spring-boot-basic-microservice/spring-boot-microservice-currency-conversion-service') {
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}") {
                             sh(script: 'mvn test')
                         }
                     }
                     post{
                         always{
-                            echo(message: 'maven validations stage ')
+                            echo(message: 'maven test stage ')
                         }
                         success{
-                            echo(message: 'maven validations successfull')
+                            echo(message: 'maven test successfull')
                         }
                         unsuccessful{
-                            echo(message: 'maven validations unsuccessfull')
+                            echo(message: 'maven test unsuccessfull')
                         }
                     }
                 }
-                stage('tests spring-boot-microservice-eureka-naming-server'){
+                stage("Tests spring-boot-microservice-eureka-naming-server"){
                     agent {
                         docker {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
@@ -158,23 +157,23 @@ pipeline {
                         }
                     }
                     steps{
-                        dir('spring-boot-basic-microservice/spring-boot-microservice-eureka-naming-server') {
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME}") {
                             sh(script: 'mvn test')
                         }
                     }
                     post{
                         always{
-                            echo(message: 'maven validations stage ')
+                            echo(message: 'maven test stage ')
                         }
                         success{
-                            echo(message: 'maven validations successfull')
+                            echo(message: 'maven test successfull')
                         }
                         unsuccessful{
-                            echo(message: 'maven validations unsuccessfull')
+                            echo(message: 'maven test unsuccessfull')
                         }
                     }
                 }
-                stage('tests spring-boot-microservice-forex-service'){
+                stage("Tests spring-boot-microservice-forex-service"){
                     agent {
                         docker {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
@@ -182,23 +181,22 @@ pipeline {
                         }
                     }
                     steps{
-                        dir('spring-boot-basic-microservice/spring-boot-microservice-forex-service') {
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_FOREX_SERVICE_NAME}") {
                             sh(script: 'mvn test')
                         }
                     }
                     post{
                         always{
-                            echo(message: 'maven validations stage ')
+                            echo(message: 'maven test stage ')
                         }
                         success{
-                            echo(message: 'maven validations successfull')
+                            echo(message: 'maven test successfull')
                         }
                         unsuccessful{
-                            echo(message: 'maven validations unsuccessfull')
+                            echo(message: 'maven test unsuccessfull')
                         }
                     }
                 }
-            
             }
         }
 
