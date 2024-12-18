@@ -200,31 +200,86 @@ pipeline {
             }
         }
 
-        // stage('Build'){
-        //     agent {
-        //         docker {
-        //             image 'maven:3.9.6-eclipse-temurin-17-alpine'
-        //             args '-v $HOME/.m2:/root/.m2'
-        //         }
-        //     }                               
-        //     steps{
-        //         dir('spring-boot-microservice-currency-conversion-service') {
-        //             sh 'mvn -B -DskipTests clean package'
-        //         }
-        //     }
-        //     post{
-        //         always{
-        //             echo(message: 'maven Build stage ')
-        //         }
-        //         success{
-        //             echo(message: 'maven Build successfull')
-        //             archiveArtifacts artifacts: '**/target/*.jar'
-        //         }
-        //         unsuccessful{
-        //             echo(message: 'maven Build unsuccessfull')
-        //         }
-        //     }
-        // }   
+        stage('Parallel Build spring-boot-basic-microservice'){
+            parallel {
+                stage("Build spring-boot-microservice-currency-conversion-service"){
+                    agent {
+                        docker {
+                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps{
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}") {
+                            sh(script: 'mvn -B -DskipTests clean package')
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'maven build stage ')
+                        }
+                        success{
+                            echo(message: 'maven build successfull')
+                            // archiveArtifacts artifacts: '**/target/*.jar'
+                        }
+                        unsuccessful{
+                            echo(message: 'maven build unsuccessfull')
+                        }
+                    }
+                }
+                stage("builds spring-boot-microservice-eureka-naming-server"){
+                    agent {
+                        docker {
+                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps{
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME}") {
+                            sh(script: 'mvn -B -DskipTests clean package')
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'maven build stage ')
+                        }
+                        success{
+                            echo(message: 'maven build successfull')
+                            // archiveArtifacts artifacts: '**/target/*.jar'
+                        }
+                        unsuccessful{
+                            echo(message: 'maven build unsuccessfull')
+                        }
+                    }
+                }
+                stage("builds spring-boot-microservice-forex-service"){
+                    agent {
+                        docker {
+                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps{
+                        dir("spring-boot-basic-microservice/${SPRING_BOOT_APP_FOREX_SERVICE_NAME}") {
+                            sh(script: 'mvn -B -DskipTests clean package')
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'maven build stage ')
+                        }
+                        success{
+                            echo(message: 'maven build successfull')
+                            // archiveArtifacts artifacts: '**/target/*.jar'
+                        }
+                        unsuccessful{
+                            echo(message: 'maven build unsuccessfull')
+                        }
+                    }
+                }
+            }
+        }
+           
 
         
 
