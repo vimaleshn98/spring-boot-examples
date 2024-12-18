@@ -288,7 +288,8 @@ pipeline {
                         script {
                             // Build Docker image for the Spring Boot app
                             sh '''#!/bin/bash
-                            cd spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}
+                            pwd
+                            cd ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}
                             docker build --build-arg SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME=${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME} --build-arg SPRING_BOOT_CURRENCY_CONVERSION_PORT=${SPRING_BOOT_CURRENCY_CONVERSION_PORT} -t ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT} .
                             '''
                         }
@@ -311,7 +312,8 @@ pipeline {
                         script {
                             // Build Docker image for the Spring Boot app
                             sh '''#!/bin/bash
-                            cd spring-boot-basic-microservice/${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME}
+                            pwd
+                            cd ${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME}
                             docker build --build-arg SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME=${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME} --build-arg SPRING_BOOT_EUREKA_NAME_SERVER_PORT=${SPRING_BOOT_EUREKA_NAME_SERVER_PORT} -t ${DOCKER_EUREKA_NAME_SERVER_REGISTRY}/${DOCKER_EUREKA_NAME_SERVER_REPO}:${GIT_COMMIT} .
                             '''
                         }
@@ -334,7 +336,8 @@ pipeline {
                         script {
                             // Build Docker image for the Spring Boot app
                             sh '''#!/bin/bash
-                            cd spring-boot-basic-microservice/${SPRING_BOOT_APP_FOREX_SERVICE_NAME}
+                            pwd
+                            cd ${SPRING_BOOT_APP_FOREX_SERVICE_NAME}
                             docker build --build-arg SPRING_BOOT_APP_FOREX_SERVICE_NAME=${SPRING_BOOT_APP_FOREX_SERVICE_NAME} --build-arg SPRING_BOOT_FOREX_SERVICE_PORT=${SPRING_BOOT_FOREX_SERVICE_PORT} -t ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT} .
                             '''
                         }
