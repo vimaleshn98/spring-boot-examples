@@ -293,6 +293,10 @@ pipeline {
                             pwd
                             echo "-----------"
                             cd spring-boot-basic-microservice
+                            echo "present working directory"
+                            echo "SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME: ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}"                            
+                            pwd
+                            echo "-----------"
                             docker build --build-arg SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME=${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME} --build-arg SPRING_BOOT_CURRENCY_CONVERSION_PORT=${SPRING_BOOT_CURRENCY_CONVERSION_PORT} -t ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT} .
                             '''
                         }
