@@ -202,6 +202,8 @@ pipeline {
             echo 'Build or deployment failed!'
         }
         always {
+            // Clean up workspace after each build
+            cleanWs()
             echo 'Be Happy!!'
         }
     }
