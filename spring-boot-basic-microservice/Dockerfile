@@ -10,12 +10,12 @@ ENV SPRING_BOOT_APP_NAME=${SPRING_BOOT_APP_NAME}
 ENV SPRING_BOOT_PORT=${SPRING_BOOT_PORT}
 
 # Set the working directory in the container
-WORKDIR /${SPRING_BOOT_APP_NAME}
+WORKDIR /spring-boot-microservice-currency-conversion-service
 
 # Copy the Spring Boot JAR file into the container
-COPY target/*.jar ${SPRING_BOOT_APP_NAME}-0.0.1-SNAPSHOT.jar
+COPY target/spring-boot-microservice-currency-conversion-service-0.0.1-SNAPSHOT.jar ${SPRING_BOOT_APP_NAME}-0.0.1-SNAPSHOT.jar
 
-# Expose port 9090 for the Spring Boot application
+# Expose the port for the Spring Boot application
 EXPOSE ${SPRING_BOOT_PORT}
 
 # Run the Spring Boot application
