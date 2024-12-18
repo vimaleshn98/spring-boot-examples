@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.in28minutes.springboot.microservice.example.currency-conversion</groupId>
-    <artifactId>spring-boot-microservice-currency-conversion</artifactId>
+    <artifactId>spring-boot-microservice-currency-conversion-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
