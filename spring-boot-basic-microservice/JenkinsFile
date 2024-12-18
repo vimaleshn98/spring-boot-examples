@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Define currency conversion environment variables
         SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME = 'spring-boot-microservice-currency-conversion-service'      // Spring Boot app name
-        SPRING_BOOT_CURRENCY_CONVERSION_PORT = 9090                          // Spring Boot application port
+        SPRING_BOOT_CURRENCY_CONVERSION_PORT = 8100                          // Spring Boot application port
         DOCKER_CURRENCY_CONVERSION_IMAGE_NAME = 'spring-boot-microservice-currency-conversion-service'   // Docker image name
         DOCKER_CURRENCY_CONVERSION_REGISTRY = 'vimalesh198'            // Docker registry username
         DOCKER_CURRENCY_CONVERSION_REPO = 'spring-boot-microservice-currency-conversion-service'          // Docker repository name
@@ -12,7 +12,7 @@ pipeline {
 
         // Define eureka naming server environment variables
         SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME = 'spring-boot-microservice-eureka-naming-server'      // Spring Boot app name
-        SPRING_BOOT_EUREKA_NAME_SERVER_PORT = 9090                          // Spring Boot application port
+        SPRING_BOOT_EUREKA_NAME_SERVER_PORT = 8761                          // Spring Boot application port
         DOCKER_EUREKA_NAME_SERVER_IMAGE_NAME = 'spring-boot-microservice-eureka-naming-server'   // Docker image name
         DOCKER_EUREKA_NAME_SERVER_REGISTRY = 'vimalesh198'            // Docker registry username
         DOCKER_EUREKA_NAME_SERVER_REPO = 'spring-boot-microservice-eureka-naming-server'          // Docker repository name
@@ -20,7 +20,7 @@ pipeline {
 
         // Define forex service environment variables
         SPRING_BOOT_APP_FOREX_SERVICE_NAME = 'spring-boot-microservice-forex-service'      // Spring Boot app name
-        SPRING_BOOT_FOREX_SERVICE_PORT = 9090                          // Spring Boot application port
+        SPRING_BOOT_FOREX_SERVICE_PORT = 8000                          // Spring Boot application port
         DOCKER_FOREX_SERVICE_IMAGE_NAME = 'spring-boot-microservice-forex-service'   // Docker image name
         DOCKER_FOREX_SERVICE_REGISTRY = 'vimalesh198'            // Docker registry username
         DOCKER_FOREX_SERVICE_REPO = 'spring-boot-microservice-forex-service'          // Docker repository name
@@ -280,89 +280,288 @@ pipeline {
             }
         }
            
-
+        stage('Parallel Docker Build spring-boot-basic-microservice'){
+            parallel {
+                stage("Docker Build spring-boot-microservice-currency-conversion-service"){
+                    agent any
+                    steps{
+                        script {
+                            // Build Docker image for the Spring Boot app
+                            sh '''#!/bin/bash
+                            cd spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}
+                            docker build --build-arg SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME=${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME} --build-arg SPRING_BOOT_CURRENCY_CONVERSION_PORT=${SPRING_BOOT_CURRENCY_CONVERSION_PORT} -t ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT} .
+                            '''
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'Docker Build spring-boot-microservice-currency-conversion-service running')
+                        }
+                        success{
+                            echo(message: 'Docker Build spring-boot-microservice-currency-conversion-service successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Docker Build spring-boot-microservice-currency-conversion-service unsuccessfull')
+                        }
+                    }
+                }
+                stage("Docker Build spring-boot-microservice-eureka-naming-server"){
+                    agent any
+                    steps{
+                        script {
+                            // Build Docker image for the Spring Boot app
+                            sh '''#!/bin/bash
+                            cd spring-boot-basic-microservice/${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME}
+                            docker build --build-arg SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME=${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME} --build-arg SPRING_BOOT_EUREKA_NAME_SERVER_PORT=${SPRING_BOOT_EUREKA_NAME_SERVER_PORT} -t ${DOCKER_EUREKA_NAME_SERVER_REGISTRY}/${DOCKER_EUREKA_NAME_SERVER_REPO}:${GIT_COMMIT} .
+                            '''
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'Docker Build spring-boot-microservice-eureka-naming-server running')
+                        }
+                        success{
+                            echo(message: 'Docker Build spring-boot-microservice-eureka-naming-server successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Docker Build spring-boot-microservice-eureka-naming-server unsuccessfull')
+                        }
+                    }
+                }
+                stage("Docker builds spring-boot-microservice-forex-service"){
+                    agent any
+                    steps{
+                        script {
+                            // Build Docker image for the Spring Boot app
+                            sh '''#!/bin/bash
+                            cd spring-boot-basic-microservice/${SPRING_BOOT_APP_FOREX_SERVICE_NAME}
+                            docker build --build-arg SPRING_BOOT_APP_FOREX_SERVICE_NAME=${SPRING_BOOT_APP_FOREX_SERVICE_NAME} --build-arg SPRING_BOOT_FOREX_SERVICE_PORT=${SPRING_BOOT_FOREX_SERVICE_PORT} -t ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT} .
+                            '''
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'Docker Build spring-boot-microservice-forex-service running')
+                        }
+                        success{
+                            echo(message: 'Docker Build spring-boot-microservice-forex-service successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Docker Build spring-boot-microservice-forex-service unsuccessfull')
+                        }
+                    }
+                }
+            }
+        }
         
-
-        // stage('Build Docker Image') {
-        //     agent any
-        //     steps {                
-        //         script {
-        //             // Build Docker image for the Spring Boot app
-        //             sh '''#!/bin/bash
-        //             cd spring-boot-microservice-currency-conversion-service
-        //             docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT} .
-        //             '''
-        //         }
-        //     }
-        // }
-
-        // stage('Push Docker Image') {
-        //     agent any
-        //     steps {
-        //         script {
-        //              def userInput = input message: 'Do you want to proceed?', parameters: [
-        //                 booleanParam(defaultValue: false, description: 'Push to Docker Hub?', name: 'Push')
-        //             ]
-        //             // Log in to Docker Hub and push the image using the stored credentials
-        //             withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-        //                 sh '''#!/bin/bash
-        //                 docker --version
-        //                 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        //                 docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-        //                 '''
-        //             }
-            
+        stage('Parallel Push Docker Image spring-boot-basic-microservice'){
+            parallel {
+                stage("Push Docker Image spring-boot-microservice-currency-conversion-service"){
+                    agent any
+                    steps {
+                        script {
+                            def userInput = input message: 'Do you want to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Push to spring-boot-microservice-currency-conversion-service Docker Hub?', name: 'Push')
+                            ]
+                            // Log in to Docker Hub and push the image using the stored credentials
+                            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh '''#!/bin/bash
+                                docker --version
+                                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                                docker push ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT}
+                                '''
+                            }
                     
-        //         }
-        //     }
-        //     post{
-        //         success{
-        //              script {
-        //                 // Cleanup: remove the Docker image after successful build
-        //                 echo "Cleaning up Docker image..."
-        //                 sh '''#!/bin/bash
-        //                 echo "Removing image: ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}"
-        //                 docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT} || true
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
+                            
+                        }
+                    }
+                    post{
+                        always{
+                            script {
+                                // Cleanup: remove the Docker image after successful build
+                                echo "Cleaning up Docker image..."
+                                sh '''#!/bin/bash
+                                echo "Removing image: ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT}"
+                                docker rmi ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT} || true
+                                '''
+                            }
+                        }
+                        success{
+                            echo(message: 'Push Docker Image spring-boot-microservice-currency-conversion-service successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Push Docker Image spring-boot-microservice-currency-conversion-service unsuccessfull')
+                        }
+                    }
+                }
+                stage("Push Docker Image spring-boot-microservice-eureka-naming-server"){
+                    agent any
+                    steps{
+                        script {
+                            def userInput = input message: 'Do you want to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Push to spring-boot-microservice-eureka-naming-server Docker Hub?', name: 'Push')
+                            ]
+                            // Log in to Docker Hub and push the image using the stored credentials
+                            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh '''#!/bin/bash
+                                docker --version
+                                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                                docker push ${DOCKER_EUREKA_NAME_SERVER_REGISTRY}/${DOCKER_EUREKA_NAME_SERVER_REPO}:${GIT_COMMIT}
+                                '''
+                            }
+                    
+                            
+                        }
+                    }
+                    post{
+                        always{
+                            script {
+                                // Cleanup: remove the Docker image after successful build
+                                echo "Cleaning up Docker image..."
+                                sh '''#!/bin/bash
+                                echo "Removing image: ${DOCKER_EUREKA_NAME_SERVER_REGISTRY}/${DOCKER_EUREKA_NAME_SERVER_REPO}:${GIT_COMMIT}"
+                                docker rmi ${DOCKER_EUREKA_NAME_SERVER_REGISTRY}/${DOCKER_EUREKA_NAME_SERVER_REPO}:${GIT_COMMIT} || true
+                                '''
+                            }
+                        }
+                        success{
+                            echo(message: 'Push Docker Image spring-boot-microservice-eureka-naming-server successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Push Docker Image spring-boot-microservice-eureka-naming-server unsuccessfull')
+                        }
+                    }
+                }
+                stage("Push Docker Images spring-boot-microservice-forex-service"){
+                    agent any
+                    steps{
+                        script {
+                            def userInput = input message: 'Do you want to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Push to spring-boot-microservice-forex-service Docker Hub?', name: 'Push')
+                            ]
+                            // Log in to Docker Hub and push the image using the stored credentials
+                            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh '''#!/bin/bash
+                                docker --version
+                                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                                docker push ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT}
+                                '''
+                            }
+                    
+                            
+                        }
+                    }
+                    post{
+                        always{
+                            script {
+                                // Cleanup: remove the Docker image after successful build
+                                echo "Cleaning up Docker image..."
+                                sh '''#!/bin/bash
+                                echo "Removing image: ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT}"
+                                docker rmi ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT} || true
+                                '''
+                            }
+                        }
+                        success{
+                            echo(message: 'Push Docker Image spring-boot-microservice-forex-service successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: 'Push Docker Image spring-boot-microservice-forex-service unsuccessfull')
+                        }
+                    }
+                }
+            }
+        }
 
-        // stage('Deploy to Staging') {
-        //     agent any
-        //     steps {
-        //         script {
-        //             def userInput = input message: 'Do you want to proceed?', parameters: [
-        //                 booleanParam(defaultValue: false, description: 'Deploy to environment?', name: 'Deploy')
-        //             ]
+        stage('Parallel Deploy to Staging spring-boot-basic-microservice'){
+            parallel {
+                stage(" Deploy to Staging spring-boot-microservice-currency-conversion-service"){
+                    agent any
+                    steps {
+                        script {
+                            def userInput = input message: 'Do you want spring-boot-microservice-currency-conversion-service to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Deploy to spring-boot-microservice-currency-conversion-service environment?', name: 'Deploy')
+                            ]
 
-        //             // Log in to Docker Hub and pull the image using the stored credentials
-        //             withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-        //                 sh '''#!/bin/bash
-        //                 docker --version
-        //                 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        //                 docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-        //                 docker run -p 9090:9090 -d ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('clean up stuffs') {
-        //     // agent any
-        //     steps {
-        //             script {
-        //                 // Clean up Docker images to save space
-        //                 sh '''#!/bin/bash
-        //                 echo ${GIT_COMMIT}
-        //                 docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-        //                 '''
-        //             }
-        //         }
-        // }
+                            // Log in to Docker Hub and pull the image using the stored credentials
+                            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh '''#!/bin/bash
+                                docker --version
+                                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                                docker pull ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT}
+                                docker run -p ${SPRING_BOOT_CURRENCY_CONVERSION_PORT}:${SPRING_BOOT_CURRENCY_CONVERSION_PORT} -d ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT}
+                                '''
+                            }
+                        }
+                    }
+                    post{
+                        success{
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-currency-conversion-service successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-currency-conversion-service unsuccessfull')
+                        }
+                    }
+                }
+                stage("Deploy to Staging spring-boot-microservice-eureka-naming-server"){
+                    agent any
+                    steps {
+                        script {
+                            def userInput = input message: 'Do you want spring-boot-microservice-eureka-naming-server to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Deploy to spring-boot-microservice-eureka-naming-server environment?', name: 'Deploy')
+                            ]
 
-    
+                            // Log in to Docker Hub and pull the image using the stored credentials
+                            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh '''#!/bin/bash
+                                docker --version
+                                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                                docker pull ${DOCKER_EUREKA_NAME_SERVER_REGISTRY}/${DOCKER_EUREKA_NAME_SERVER_REPO}:${GIT_COMMIT}
+                                docker run -p ${SPRING_BOOT_EUREKA_NAME_SERVER_PORT}:${SPRING_BOOT_EUREKA_NAME_SERVER_PORT} -d ${DOCKER_EUREKA_NAME_SERVER_REGISTRY}/${DOCKER_EUREKA_NAME_SERVER_REPO}:${GIT_COMMIT}
+                                '''
+                            }
+                        }
+                    }
+                    post{
+                        success{
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-eureka-naming-server successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-eureka-naming-server unsuccessfull')
+                        }
+                    }
+                }
+                stage("Deploy to Staging spring-boot-microservice-forex-service"){
+                    agent any
+                    steps {
+                        script {
+                            def userInput = input message: 'Do you want spring-boot-microservice-forex-service to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Deploy to spring-boot-microservice-forex-service environment?', name: 'Deploy')
+                            ]
+
+                            // Log in to Docker Hub and pull the image using the stored credentials
+                            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                                sh '''#!/bin/bash
+                                docker --version
+                                docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                                docker pull ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT}
+                                docker run -p ${SPRING_BOOT_FOREX_SERVICE_PORT}:${SPRING_BOOT_FOREX_SERVICE_PORT} -d ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT}
+                                '''
+                            }
+                        }
+                    }
+                    post{
+                        success{
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-forex-service successfull')                        
+                        }
+                        unsuccessful{
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-forex-service unsuccessfull')
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     post {

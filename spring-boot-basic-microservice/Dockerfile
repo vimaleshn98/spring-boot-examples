@@ -2,13 +2,13 @@
 FROM openjdk:17-jdk-slim
 
 # Set the working directory in the container
-WORKDIR /spring-boot-2-rest-service-swagger
+WORKDIR /spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}
 
 # Copy the Spring Boot JAR file into the container
-COPY target/spring-boot-2-rest-service-swagger-0.0.1-SNAPSHOT.jar spring-boot-2-rest-service-swagger-0.0.1-SNAPSHOT.jar
+COPY target/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}-0.0.1-SNAPSHOT.jar ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}-0.0.1-SNAPSHOT.jar
 
 # Expose port 9090 for the Spring Boot application
-EXPOSE 9090
+EXPOSE ${SPRING_BOOT_CURRENCY_CONVERSION_PORT}
 
 # Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "spring-boot-2-rest-service-swagger-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}-0.0.1-SNAPSHOT.jar"]
