@@ -220,7 +220,7 @@ pipeline {
                         }
                         success{
                             echo(message: 'maven build successfull')
-                            // archiveArtifacts artifacts: '**/target/*.jar'
+                            archiveArtifacts artifacts: "**/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}/target/*.jar"
                         }
                         unsuccessful{
                             echo(message: 'maven build unsuccessfull')
@@ -245,7 +245,7 @@ pipeline {
                         }
                         success{
                             echo(message: 'maven build successfull')
-                            // archiveArtifacts artifacts: '**/target/*.jar'
+                            archiveArtifacts artifacts:  "**/${SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME}/target/*.jar"
                         }
                         unsuccessful{
                             echo(message: 'maven build unsuccessfull')
@@ -270,7 +270,7 @@ pipeline {
                         }
                         success{
                             echo(message: 'maven build successfull')
-                            // archiveArtifacts artifacts: '**/target/*.jar'
+                            archiveArtifacts artifacts: "**/${SPRING_BOOT_APP_FOREX_SERVICE_NAME}/target/*.jar"
                         }
                         unsuccessful{
                             echo(message: 'maven build unsuccessfull')
