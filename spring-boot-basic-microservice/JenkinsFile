@@ -1,23 +1,33 @@
 pipeline {
-    agent any 
+    agent none
     
     environment {
-        // Define environment variables
-        SPRING_BOOT_APP_NAME = 'spring-boot-2-rest-service-with-swagger'      // Spring Boot app name
-        SPRING_BOOT_PORT = 9090                          // Spring Boot application port
-        DOCKER_IMAGE_NAME = 'spring-boot-2-rest-service-with-swagger'   // Docker image name
-        DOCKER_REGISTRY = 'vimalesh198'            // Docker registry username
-        DOCKER_REPO = 'spring-boot-2-rest-service-with-swagger'          // Docker repository name
-        // MAVEN_HOME = tool name: 'M3', type: 'Tool'       // Use Maven tool configured in Jenkins
+        // Define currency conversion environment variables
+        SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME = 'spring-boot-microservice-currency-conversion-service'      // Spring Boot app name
+        SPRING_BOOT_CURRENCY_CONVERSION_PORT = 9090                          // Spring Boot application port
+        DOCKER_CURRENCY_CONVERSION_IMAGE_NAME = 'spring-boot-microservice-currency-conversion-service'   // Docker image name
+        DOCKER_CURRENCY_CONVERSION_REGISTRY = 'vimalesh198'            // Docker registry username
+        DOCKER_CURRENCY_CONVERSION_REPO = 'spring-boot-microservice-currency-conversion-service'          // Docker repository name
+        
+
+        // Define eureka naming server environment variables
+        SPRING_BOOT_APP_EUREKA_NAME_SERVER_NAME = 'spring-boot-microservice-eureka-naming-server'      // Spring Boot app name
+        SPRING_BOOT_EUREKA_NAME_SERVER_PORT = 9090                          // Spring Boot application port
+        DOCKER_EUREKA_NAME_SERVER_IMAGE_NAME = 'spring-boot-microservice-eureka-naming-server'   // Docker image name
+        DOCKER_EUREKA_NAME_SERVER_REGISTRY = 'vimalesh198'            // Docker registry username
+        DOCKER_EUREKA_NAME_SERVER_REPO = 'spring-boot-microservice-eureka-naming-server'          // Docker repository name
+        
+
+        // Define forex service environment variables
+        SPRING_BOOT_APP_FOREX_SERVICE_NAME = 'spring-boot-microservice-forex-service'      // Spring Boot app name
+        SPRING_BOOT_FOREX_SERVICE_PORT = 9090                          // Spring Boot application port
+        DOCKER_FOREX_SERVICE_IMAGE_NAME = 'spring-boot-microservice-forex-service'   // Docker image name
+        DOCKER_FOREX_SERVICE_REGISTRY = 'vimalesh198'            // Docker registry username
+        DOCKER_FOREX_SERVICE_REPO = 'spring-boot-microservice-forex-service'          // Docker repository name
+        
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Clone the Git repository
-                git 'https://github.com/vimaleshn98/spring-boot-examples.git'
-            }
-        }
         stage('maven version'){
             agent {
                 docker {
@@ -35,9 +45,9 @@ pipeline {
             }
         }
 
-        stage('Parallel validation'){
+        stage('Parallel validation spring-boot-basic-microservice'){
             parallel {
-                stage('validation'){
+                stage('validation spring-boot-microservice-currency-conversion-service'){
                     agent {
                         docker {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
@@ -45,7 +55,7 @@ pipeline {
                         }
                     }
                     steps{
-                        dir('spring-boot-2-rest-service-with-swagger') {
+                        dir('spring-boot-basic-microservice/spring-boot-microservice-currency-conversion-service') {
                             sh(script: 'mvn clean validate')
                         }
                     }
@@ -61,128 +71,177 @@ pipeline {
                         }
                     }
                 }
-            }
-        }
-        
-
-        stage('Test'){
-            agent {
-                docker {
-                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            }
-            steps{
-                dir('spring-boot-2-rest-service-with-swagger') {
-                    sh 'mvn test'
-                }
-            }
-            post{
-                always{
-                    echo(message: 'maven Test stage ')
-                }
-                success{
-                    echo(message: 'maven test successfull')
-                }
-                unsuccessful{
-                    echo(message: 'maven test unsuccessfull')
-                }
-            }
-        }
-        stage('Build'){
-            agent {
-                docker {
-                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            }                               
-            steps{
-                dir('spring-boot-2-rest-service-with-swagger') {
-                    sh 'mvn -B -DskipTests clean package'
-                }
-            }
-            post{
-                always{
-                    echo(message: 'maven Build stage ')
-                }
-                success{
-                    echo(message: 'maven Build successfull')
-                    archiveArtifacts artifacts: '**/target/*.jar'
-                }
-                unsuccessful{
-                    echo(message: 'maven Build unsuccessfull')
-                }
-            }
-        }   
-
-        
-
-        stage('Build Docker Image') {
-            // agent any
-            steps {                
-                script {
-                    // Build Docker image for the Spring Boot app
-                    sh '''#!/bin/bash
-                    cd spring-boot-2-rest-service-with-swagger
-                    docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT} .
-                    '''
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            // agent any
-            steps {
-                script {
-                     def userInput = input message: 'Do you want to proceed?', parameters: [
-                        booleanParam(defaultValue: false, description: 'Push to Docker Hub?', name: 'Push')
-                    ]
-                    // Log in to Docker Hub and push the image using the stored credentials
-                    withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh '''#!/bin/bash
-                        docker --version
-                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-                        docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-                        '''
+                stage('validation spring-boot-microservice-eureka-naming-server'){
+                    agent {
+                        docker {
+                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
                     }
+                    steps{
+                        dir('spring-boot-basic-microservice/spring-boot-microservice-eureka-naming-server') {
+                            sh(script: 'mvn clean validate')
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'maven validations stage ')
+                        }
+                        success{
+                            echo(message: 'maven validations successfull')
+                        }
+                        unsuccessful{
+                            echo(message: 'maven validations unsuccessfull')
+                        }
+                    }
+                }
+                stage('validation spring-boot-microservice-forex-service'){
+                    agent {
+                        docker {
+                            image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                            args '-v $HOME/.m2:/root/.m2'
+                        }
+                    }
+                    steps{
+                        dir('spring-boot-basic-microservice/spring-boot-microservice-forex-service') {
+                            sh(script: 'mvn clean validate')
+                        }
+                    }
+                    post{
+                        always{
+                            echo(message: 'maven validations stage ')
+                        }
+                        success{
+                            echo(message: 'maven validations successfull')
+                        }
+                        unsuccessful{
+                            echo(message: 'maven validations unsuccessfull')
+                        }
+                    }
+                }
+            
+            }
+        }
+        
+
+        // stage('Test'){
+        //     agent {
+        //         docker {
+        //             image 'maven:3.9.6-eclipse-temurin-17-alpine'
+        //             args '-v $HOME/.m2:/root/.m2'
+        //         }
+        //     }
+        //     steps{
+        //         dir('spring-boot-microservice-currency-conversion-service') {
+        //             sh 'mvn test'
+        //         }
+        //     }
+        //     post{
+        //         always{
+        //             echo(message: 'maven Test stage ')
+        //         }
+        //         success{
+        //             echo(message: 'maven test successfull')
+        //         }
+        //         unsuccessful{
+        //             echo(message: 'maven test unsuccessfull')
+        //         }
+        //     }
+        // }
+        // stage('Build'){
+        //     agent {
+        //         docker {
+        //             image 'maven:3.9.6-eclipse-temurin-17-alpine'
+        //             args '-v $HOME/.m2:/root/.m2'
+        //         }
+        //     }                               
+        //     steps{
+        //         dir('spring-boot-microservice-currency-conversion-service') {
+        //             sh 'mvn -B -DskipTests clean package'
+        //         }
+        //     }
+        //     post{
+        //         always{
+        //             echo(message: 'maven Build stage ')
+        //         }
+        //         success{
+        //             echo(message: 'maven Build successfull')
+        //             archiveArtifacts artifacts: '**/target/*.jar'
+        //         }
+        //         unsuccessful{
+        //             echo(message: 'maven Build unsuccessfull')
+        //         }
+        //     }
+        // }   
+
+        
+
+        // stage('Build Docker Image') {
+        //     agent any
+        //     steps {                
+        //         script {
+        //             // Build Docker image for the Spring Boot app
+        //             sh '''#!/bin/bash
+        //             cd spring-boot-microservice-currency-conversion-service
+        //             docker build -t ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT} .
+        //             '''
+        //         }
+        //     }
+        // }
+
+        // stage('Push Docker Image') {
+        //     agent any
+        //     steps {
+        //         script {
+        //              def userInput = input message: 'Do you want to proceed?', parameters: [
+        //                 booleanParam(defaultValue: false, description: 'Push to Docker Hub?', name: 'Push')
+        //             ]
+        //             // Log in to Docker Hub and push the image using the stored credentials
+        //             withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+        //                 sh '''#!/bin/bash
+        //                 docker --version
+        //                 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        //                 docker push ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+        //                 '''
+        //             }
             
                     
-                }
-            }
-            post{
-                success{
-                     script {
-                        // Cleanup: remove the Docker image after successful build
-                        echo "Cleaning up Docker image..."
-                        sh '''#!/bin/bash
-                        echo "Removing image: ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}"
-                        docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT} || true
-                        '''
-                    }
-                }
-            }
-        }
+        //         }
+        //     }
+        //     post{
+        //         success{
+        //              script {
+        //                 // Cleanup: remove the Docker image after successful build
+        //                 echo "Cleaning up Docker image..."
+        //                 sh '''#!/bin/bash
+        //                 echo "Removing image: ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}"
+        //                 docker rmi ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT} || true
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Deploy to Staging') {
-            // agent any
-            steps {
-                script {
-                    def userInput = input message: 'Do you want to proceed?', parameters: [
-                        booleanParam(defaultValue: false, description: 'Deploy to environment?', name: 'Deploy')
-                    ]
+        // stage('Deploy to Staging') {
+        //     agent any
+        //     steps {
+        //         script {
+        //             def userInput = input message: 'Do you want to proceed?', parameters: [
+        //                 booleanParam(defaultValue: false, description: 'Deploy to environment?', name: 'Deploy')
+        //             ]
 
-                    // Log in to Docker Hub and pull the image using the stored credentials
-                    withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh '''#!/bin/bash
-                        docker --version
-                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-                        docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-                        docker run -p 9090:9090 -d ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
-                        '''
-                    }
-                }
-            }
-        }
+        //             // Log in to Docker Hub and pull the image using the stored credentials
+        //             withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+        //                 sh '''#!/bin/bash
+        //                 docker --version
+        //                 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        //                 docker pull ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+        //                 docker run -p 9090:9090 -d ${DOCKER_REGISTRY}/${DOCKER_REPO}:${GIT_COMMIT}
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
         // stage('clean up stuffs') {
         //     // agent any
         //     steps {
@@ -207,8 +266,6 @@ pipeline {
             echo 'Build or deployment failed!'
         }
         always {
-            // Clean up workspace after each build
-            cleanWs()
             echo 'Be Happy!!'
         }
     }
