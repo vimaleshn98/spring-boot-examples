@@ -19,4 +19,4 @@ COPY target/spring-boot-microservice-currency-conversion-service-0.0.1-SNAPSHOT.
 EXPOSE ${SPRING_BOOT_PORT}
 
 # Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "${SPRING_BOOT_APP_NAME}-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT java -jar ${SPRING_BOOT_APP_NAME}-0.0.1-SNAPSHOT.jar

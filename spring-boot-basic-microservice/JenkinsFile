@@ -495,12 +495,12 @@ pipeline {
 
         stage('Parallel Deploy to Staging spring-boot-basic-microservice'){
             parallel {
-                stage(" Deploy to Staging spring-boot-microservice-currency-conversion-service"){
+                stage("Deploy to Staging spring-boot-microservice-forex-service"){
                     agent any
                     steps {
                         script {
-                            def userInput = input message: 'Do you want spring-boot-microservice-currency-conversion-service to proceed?', parameters: [
-                                booleanParam(defaultValue: false, description: 'Deploy to spring-boot-microservice-currency-conversion-service environment?', name: 'Deploy')
+                            def userInput = input message: 'Do you want spring-boot-microservice-forex-service to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Deploy to spring-boot-microservice-forex-service environment?', name: 'Deploy')
                             ]
 
                             // Log in to Docker Hub and pull the image using the stored credentials
@@ -508,18 +508,18 @@ pipeline {
                                 sh '''#!/bin/bash
                                 docker --version
                                 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-                                docker pull ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT}
-                                docker run -p ${SPRING_BOOT_CURRENCY_CONVERSION_PORT}:${SPRING_BOOT_CURRENCY_CONVERSION_PORT} -d ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT}
+                                docker pull ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT}
+                                docker run -p ${SPRING_BOOT_FOREX_SERVICE_PORT}:${SPRING_BOOT_FOREX_SERVICE_PORT} -d ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT}
                                 '''
                             }
                         }
                     }
                     post{
                         success{
-                            echo(message: ' Deploy to Staging  spring-boot-microservice-currency-conversion-service successfull')                        
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-forex-service successfull')                        
                         }
                         unsuccessful{
-                            echo(message: ' Deploy to Staging  spring-boot-microservice-currency-conversion-service unsuccessfull')
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-forex-service unsuccessfull')
                         }
                     }
                 }
@@ -551,12 +551,12 @@ pipeline {
                         }
                     }
                 }
-                stage("Deploy to Staging spring-boot-microservice-forex-service"){
+                stage(" Deploy to Staging spring-boot-microservice-currency-conversion-service"){
                     agent any
                     steps {
                         script {
-                            def userInput = input message: 'Do you want spring-boot-microservice-forex-service to proceed?', parameters: [
-                                booleanParam(defaultValue: false, description: 'Deploy to spring-boot-microservice-forex-service environment?', name: 'Deploy')
+                            def userInput = input message: 'Do you want spring-boot-microservice-currency-conversion-service to proceed?', parameters: [
+                                booleanParam(defaultValue: false, description: 'Deploy to spring-boot-microservice-currency-conversion-service environment?', name: 'Deploy')
                             ]
 
                             // Log in to Docker Hub and pull the image using the stored credentials
@@ -564,18 +564,18 @@ pipeline {
                                 sh '''#!/bin/bash
                                 docker --version
                                 docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-                                docker pull ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT}
-                                docker run -p ${SPRING_BOOT_FOREX_SERVICE_PORT}:${SPRING_BOOT_FOREX_SERVICE_PORT} -d ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT}
+                                docker pull ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT}
+                                docker run -p ${SPRING_BOOT_CURRENCY_CONVERSION_PORT}:${SPRING_BOOT_CURRENCY_CONVERSION_PORT} -d ${DOCKER_CURRENCY_CONVERSION_REGISTRY}/${DOCKER_CURRENCY_CONVERSION_REPO}:${GIT_COMMIT}
                                 '''
                             }
                         }
                     }
                     post{
                         success{
-                            echo(message: ' Deploy to Staging  spring-boot-microservice-forex-service successfull')                        
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-currency-conversion-service successfull')                        
                         }
                         unsuccessful{
-                            echo(message: ' Deploy to Staging  spring-boot-microservice-forex-service unsuccessfull')
+                            echo(message: ' Deploy to Staging  spring-boot-microservice-currency-conversion-service unsuccessfull')
                         }
                     }
                 }
