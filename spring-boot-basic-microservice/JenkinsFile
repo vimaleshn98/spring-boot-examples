@@ -45,9 +45,9 @@ pipeline {
             }
         }
 
-        stage('Parallel validation spring-boot-basic-microservice'){
+        stage("Parallel validation ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}"){
             parallel {
-                stage('validation ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}'){
+                stage("validation ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}"){
                     agent {
                         docker {
                             image 'maven:3.9.6-eclipse-temurin-17-alpine'
