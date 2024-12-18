@@ -345,7 +345,7 @@ pipeline {
                             sh '''#!/bin/bash
                             pwd
                             cd spring-boot-basic-microservice
-                            docker build --build-arg SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME=${SPRING_BOOT_APP_FOREX_SERVICE_NAME} --build-arg SPRING_BOOT_CURRENCY_CONVERSION_PORT=${SPRING_BOOT_FOREX_SERVICE_PORT} -t ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT} .
+                            docker build --build-arg SPRING_BOOT_APP_NAME=${SPRING_BOOT_APP_FOREX_SERVICE_NAME} --build-arg SPRING_BOOT_PORT=${SPRING_BOOT_FOREX_SERVICE_PORT} -t ${DOCKER_FOREX_SERVICE_REGISTRY}/${DOCKER_FOREX_SERVICE_REPO}:${GIT_COMMIT} .
                             '''
                         }
                     }
