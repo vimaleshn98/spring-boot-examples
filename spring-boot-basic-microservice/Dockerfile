@@ -10,13 +10,17 @@ ENV SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME=${SPRING_BOOT_APP_CURRENCY_CONVERSI
 ENV SPRING_BOOT_CURRENCY_CONVERSION_PORT=${SPRING_BOOT_CURRENCY_CONVERSION_PORT}
 
 # Set the working directory in the container
-WORKDIR /spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}
+#WORKDIR /spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}
+
 
 # Check the working directory again after changing it
 RUN echo "Working directory after WORKDIR: $(pwd)"
 
 # Copy the Spring Boot JAR file into the container
-COPY target/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}-0.0.1-SNAPSHOT.jar ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}-0.0.1-SNAPSHOT.jar
+#COPY target/spring-boot-microservice-currency-conversion-service-0.0.1-SNAPSHOT.jar ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}-0.0.1-SNAPSHOT.jar
+#COPY target/spring-boot-microservice-currency-conversion-service-0.0.1-SNAPSHOT.jar spring-boot-microservice-currency-conversion-service-0.0.1-SNAPSHOT.jar
+
+COPY spring-boot-basic-microservice/${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}/target/*.jar ${SPRING_BOOT_APP_CURRENCY_CONVERSION_NAME}-0.0.1-SNAPSHOT.jar
 
 # Expose port 9090 for the Spring Boot application
 EXPOSE ${SPRING_BOOT_CURRENCY_CONVERSION_PORT}
