@@ -1,5 +1,5 @@
 pipeline {
-    agent any 
+    agent none
     
     environment {
         // Define environment variables
@@ -107,7 +107,7 @@ pipeline {
         
 
         stage('Build Docker Image') {
-            // agent any
+            agent any
             steps {                
                 script {
                     // Build Docker image for the Spring Boot app
@@ -120,7 +120,7 @@ pipeline {
         }
 
         stage('Push Docker Image') {
-            // agent any
+            agent any
             steps {
                 script {
                      def userInput = input message: 'Do you want to proceed?', parameters: [
@@ -153,7 +153,7 @@ pipeline {
         }
 
         stage('Deploy to Staging') {
-            // agent any
+            agent any
             steps {
                 script {
                     def userInput = input message: 'Do you want to proceed?', parameters: [
