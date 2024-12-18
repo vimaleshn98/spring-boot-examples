@@ -200,17 +200,17 @@ pipeline {
     
     }
 
-    post {
-        success {
-            echo 'Build and deployment successful!'
-        }
-        failure {
-            echo 'Build or deployment failed!'
-        }
-        always {
-            // Clean up workspace after each build
-            // cleanWs()
-            echo 'Be Happy!!'
-        }
-    }
+    // post {
+    //     success {
+    //         echo 'Build and deployment successful!'
+    //     }
+    //     failure {
+    //         echo 'Build or deployment failed!'
+    //     }
+    //     always {
+    //         // Clean up workspace after each build
+    //         // cleanWs()
+    //         echo 'Be Happy!!'
+    //     }
+    // }
 }
