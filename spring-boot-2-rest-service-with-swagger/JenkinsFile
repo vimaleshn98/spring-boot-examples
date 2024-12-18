@@ -1,10 +1,11 @@
 pipeline {
-    agent {
-                docker {
-                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            } // This will use any available agent for the entire pipeline.
+    // agent {
+    //     docker {
+    //         image 'maven:3.9.6-eclipse-temurin-17-alpine'
+    //         args '-v $HOME/.m2:/root/.m2'
+    //     }
+    // } // This will use any available agent for the entire pipeline.
+    agent none
     
     environment {
         // Define environment variables
@@ -17,20 +18,20 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            agent any
-            steps {
-                // Clone the Git repository
-                git 'https://github.com/vimaleshn98/spring-boot-examples.git'
-            }
-        }
+        // stage('Checkout') {
+        //     agent any
+        //     steps {
+        //         // Clone the Git repository
+        //         git 'https://github.com/vimaleshn98/spring-boot-examples.git'
+        //     }
+        // }
         stage('maven version'){
-            // agent {
-            //     docker {
-            //         image 'maven:3.9.6-eclipse-temurin-17-alpine'
-            //         args '-v $HOME/.m2:/root/.m2'
-            //     }
-            // }
+            agent {
+                docker {
+                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                    args '-v $HOME/.m2:/root/.m2'
+                }
+            }
             steps{
                 sh(script: 'mvn --version')
             }
@@ -42,12 +43,12 @@ pipeline {
         }
         
         stage('validation'){
-            // agent {
-            //     docker {
-            //         image 'maven:3.9.6-eclipse-temurin-17-alpine'
-            //         args '-v $HOME/.m2:/root/.m2'
-            //     }
-            // }
+            agent {
+                docker {
+                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                    args '-v $HOME/.m2:/root/.m2'
+                }
+            }
             steps{
                 dir('spring-boot-2-rest-service-with-swagger') {
                     sh(script: 'mvn clean validate')
@@ -67,12 +68,12 @@ pipeline {
         }
 
         stage('Test'){
-            // agent {
-            //     docker {
-            //         image 'maven:3.9.6-eclipse-temurin-17-alpine'
-            //         args '-v $HOME/.m2:/root/.m2'
-            //     }
-            // }
+            agent {
+                docker {
+                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                    args '-v $HOME/.m2:/root/.m2'
+                }
+            }
             steps{
                 dir('spring-boot-2-rest-service-with-swagger') {
                     sh 'mvn test'
@@ -91,12 +92,12 @@ pipeline {
             }
         }
         stage('Build'){
-            // agent {
-            //     docker {
-            //         image 'maven:3.9.6-eclipse-temurin-17-alpine'
-            //         args '-v $HOME/.m2:/root/.m2'
-            //     }
-            // }                               
+            agent {
+                docker {
+                    image 'maven:3.9.6-eclipse-temurin-17-alpine'
+                    args '-v $HOME/.m2:/root/.m2'
+                }
+            }                               
             steps{
                 dir('spring-boot-2-rest-service-with-swagger') {
                     sh 'mvn -B -DskipTests clean package'
