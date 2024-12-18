@@ -280,8 +280,8 @@ pipeline {
             }
         }
            
-        stage('Parallel Docker Build spring-boot-basic-microservice'){
-            parallel {
+        // stage('Parallel Docker Build spring-boot-basic-microservice'){
+        //     parallel {
                 stage("Docker Build spring-boot-microservice-currency-conversion-service"){
                     agent any
                     steps{
@@ -371,8 +371,8 @@ pipeline {
                         }
                     }
                 }
-            }
-        }
+        //     }
+        // }
         
         stage('Parallel Push Docker Image spring-boot-basic-microservice'){
             parallel {
